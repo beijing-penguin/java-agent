@@ -1,0 +1,8 @@
+javac TestAgent.java
+jar cvmf MANIFEST.MF myagent.jar TestAgent.class
+
+
+Agent-Class: TestAgent
+Premain-Class: TestAgent
+Can-Redine-Classes: true
+Can-Retransform-Classes: true

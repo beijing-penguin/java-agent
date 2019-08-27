@@ -1,0 +1,4 @@
+Agent-Class: com.dc.agent.AppAgent
+Premain-Class: com.dc.agent.AppAgent
+Can-Redine-Classes: true
+Can-Retransform-Classes: true
