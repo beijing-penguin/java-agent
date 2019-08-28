@@ -24,8 +24,7 @@ public class MainThread {
 					try {
 						bcc.b();
 						System.out.println(aa.b()+"--"+bb.b());
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
+					} catch (Throwable e) {
 						e.printStackTrace();
 					}
 				}
