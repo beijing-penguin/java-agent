@@ -7,9 +7,9 @@
 
 当然这只是一个笑话，但这样的场景在我们的实际开发中却屡见不鲜，多少次系统重启后问题复现失败，多少次我们解决故障的时间就在不断地加log，发布，加log，发布的过程中溜走...
 
-##我的模拟实现
+## 我的模拟实现
 >究竟无侵入debug技术、无侵入埋点、无侵入监控怎么实现的？我对此非常感兴趣，简单说就是获取正在执行jvm进程对应的目录的class文件，修改后重新classload到jvm中。属于jvm在线的字节码增强技术。本文只使用了asm字节码简单实现整个流程。
-###先介绍asm字节码生成、可以略过
+### 先介绍asm字节码生成、可以略过
 >比如要生成com.dc.agent.ChangePointA.java的asm指令代码块，则使用mytest项目中com.dc.mytest.asm.Test.java
 ```java
 package com.dc.mytest.asm;
@@ -23,7 +23,7 @@ public class Test {
 }
 
 ```
-###即便不知道asm代码如何编写也能使用asm框架自带工具ASMifier生成想要的字节码指令代码，如想要在PonitA.java文件中b方法里面动态加入打印方法的执行时间。先编辑b方法
+### 即便不知道asm代码如何编写也能使用asm框架自带工具ASMifier生成想要的字节码指令代码，如想要在PonitA.java文件中b方法里面动态加入打印方法的执行时间。先编辑b方法
 ```java
 	public int b() {
 		long time = System.currentTimeMillis();
@@ -38,7 +38,7 @@ public class Test {
 		return a;
 	}
 ```
-###再使用ASMifier.main(new String[] {"com.dc.mytest.debug.PointA"});生成上面这段代码的asm结构，字节码太多，这里只展示部分字节码asm的字节码如下。。
+### 再使用ASMifier.main(new String[] {"com.dc.mytest.debug.PointA"});生成上面这段代码的asm结构，字节码太多，这里只展示部分字节码asm的字节码如下。。
 
 ```java
 {
@@ -95,12 +95,12 @@ methodVisitor.visitLineNumber(29, label8);
 methodVisitor.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
 methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
 ```
-###本次运行的demo，asm字节码指令代码我已经生成完，在com.dc.agent.ChangePointA文件中，将原来PointA的b方法中的代码int a = 111111;修改成init a = 411111，并加上方法执行时间打印。
+### 本次运行的demo，asm字节码指令代码我已经生成完，在com.dc.agent.ChangePointA文件中，将原来PointA的b方法中的代码int a = 111111;修改成init a = 411111，并加上方法执行时间打印。
 
 ***
 ---------------------------------asm介绍割-------------------------------------
 ***
-#开始本项目案例中的操作（在线修改PointA对象一个方法）
+# 开始本项目案例中的操作（在线修改PointA对象一个方法）
 两个项目：一个正常运行的项目（模拟线上项目运行）和一个agent项目，源代码托管到github
 项目地址：[https://github.com/beijing-penguin/java-agent](https://links.jianshu.com/go?to=https%3A%2F%2Fgithub.com%2Fbeijing-penguin%2Fjava-agent)
 
@@ -144,7 +144,7 @@ public class MainThread {
 	}
 }
 ```
-####打印如下
+#### 打印如下
 >pid:14068:com.dc.mytest.debug.MainThread
 pid:8760:
 111111--113333
@@ -156,7 +156,7 @@ pid:8760:
 111111--113333
 111111--113333
 
-###紧接着执行另外一个项目中的main方法，attach方法传入正在运行的目标jvm进程pid
+### 紧接着执行另外一个项目中的main方法，attach方法传入正在运行的目标jvm进程pid
 ```java
 package com.dc.mytest.debug;
 
@@ -195,13 +195,13 @@ changeA
 方法执行时间cost=0
 411111--113333
 
-####（中间那段字符串只是日志信息，可以忽略不记）到此已经做到了借助agent修改了正在运行中MainThread线程所在jvm中的某个对象方法内部局部变量的值，并实时的打印输出了改变后的413333。并且打印出了执行时间。
+#### （中间那段字符串只是日志信息，可以忽略不记）到此已经做到了借助agent修改了正在运行中MainThread线程所在jvm中的某个对象方法内部局部变量的值，并实时的打印输出了改变后的413333。并且打印出了执行时间。
 
-###小结：利用agent和asm汇编级别的字节码技术能轻松改变PointA正在运行的jvm中的任意一块内存区域，在方法前后添加 方法执行时间监控、或是打印方法执行过程中的局部变量的值、或者完成一次热部署、或者打印并修改安卓软件/游戏中的某些属性（wai gua？）等等无侵入的操作 也将变得非常简单
+### 小结：利用agent和asm汇编级别的字节码技术能轻松改变PointA正在运行的jvm中的任意一块内存区域，在方法前后添加 方法执行时间监控、或是打印方法执行过程中的局部变量的值、或者完成一次热部署、或者打印并修改安卓软件/游戏中的某些属性（wai gua？）等等无侵入的操作 也将变得非常简单
 
 >两个项目一个正常运行的项目和一个agent项目，源代码托管到github，有兴趣的朋友可以下载试一试
 [https://github.com/beijing-penguin/java-agent](https://github.com/beijing-penguin/java-agent)
 
 >程序运行前，先去myagent项目目录下执行一下mvn clean install（或者idea/eclipse中run maven一下），target目录中会生成对应jar文件，并把Main中的F:\\eclipse-workspace\\myagent\\target\\myagent.jar  改成 自己本地的目录的url即可。。pom.xml文件中的jdk自行配置（目前使用jdk12最高版本，其他版本自行修改完打包即可）
 
-#####最后，本人已离职，现在北京找一份5年java高级方面的工作。有公司岗位空缺的话的可以和我联系，微信号dc429544557
+##### 最后，本人已离职，现在北京找一份5年java高级方面的工作。有公司岗位空缺的话的可以和我联系，微信号dc429544557
