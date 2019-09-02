@@ -1,8 +1,8 @@
 # 前言
 > 最近去哪网刚开源了Bistoury，一个集线上问题debug和监控于一身工具框架，能很方便的在不停止jvm的情况的下，模拟eclipse的debug功能，并且不会像原始debug那样会阻塞其他进程，只会在断点处监控某一次的请求。bistoury底层借助了阿里的Arthas和唯品会的vjtools，以及asm、javassist字节码指令框架，并增强实现了debug中的断点Breakpoint模式，并以前端ui界面的形式直接展示和操作，可以说用来调试线上问题变得非常方便
-###bistoury debug模块技术背景
+### bistoury debug模块技术背景
 >[https://github.com/qunarcorp/bistoury/blob/master/docs/cn/debug.md](https://github.com/qunarcorp/bistoury/blob/master/docs/cn/debug.md)
-###bistoury中的一个日常笑话
+### bistoury中的一个日常笑话
 >NASA要发射一个新型火箭，火箭发射升空后发现不行，NASA把火箭拖回来加了两行log，再次发射，发现又不行，又加了两行log发射，发现又不行....
 
 当然这只是一个笑话，但这样的场景在我们的实际开发中却屡见不鲜，多少次系统重启后问题复现失败，多少次我们解决故障的时间就在不断地加log，发布，加log，发布的过程中溜走...
@@ -109,7 +109,7 @@ methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMill
 
 >执行流程：先运行MainThread.java得main方法，保持jvm在线，模拟项目正在运行中。然后查看进程pid再去执行Main.java得main方法，执行完毕后，可以看到运行期间PointA内存被动态修改，打印出和原来不一样得结果，即测试完成。
 本demo的agent 动态修改了PointA得方法b()中的局部变量int a =111111；改成了int a=411111。并加入一段方法执行cost时间信息打印。（其他更强大的功能，只需要用asm加强实现一下就行，本次只是简单玩法）
-###运行MainThread
+### 运行MainThread
 ```java
 package com.dc.mytest.debug;
 
